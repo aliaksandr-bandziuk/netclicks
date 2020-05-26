@@ -30,3 +30,24 @@ leftMenu.addEventListener('click', (event) => {
       hamburger.classList.add('openMenu');
    }
 });
+
+// const filmPictures = () => {
+//    const tvShows = document.querySelector('.tv-shows');
+//    let newImage = '';
+
+//    tvShows.addEventListener('mouseover', event => {
+//       console.log(event);
+//       if (event.target.matches('.tv-card__img')) {
+//          newImage = event.target.getAttribute('src');
+//          event.target.setAttribute('src', event.target.dataset.img);
+//          console.log(event);
+//       }
+//    });
+
+//    tvShows.addEventListener('mouseout', event => {
+//       if (event.target.matches('.tv-card__img')) {
+//          event.target.setAttribute('src', newImage);
+//       }
+//    });
+// };
+// filmPictures();
