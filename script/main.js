@@ -1,27 +1,47 @@
 const IMG_URL = 'https://image.tmdb.org/t/p/w185_and_h278_bestv2';
-const API_KEY = '1fd2e1946a566c33571f4490e0094312';
+const SERVER = 'https://api.themoviedb.org/3/'
+const API_KEY = 24%5 + '1fd2e1946a566c33571f4490e0094312' + 24%5;
 
 // Elements
 
-const leftMenu = document.querySelector('.left-menu');
-const hamburger = document.querySelector('.hamburger');
-const tvShowsList = document.querySelector('.tv-shows__list');
-const modal = document.querySelector('.modal');
+const leftMenu = document.querySelector('.left-menu'),
+    hamburger = document.querySelector('.hamburger'),
+    tvShowsList = document.querySelector('.tv-shows__list'),
+    modal = document.querySelector('.modal'),
+    tvShows = document.querySelector('.tv-shows'),
+    tvCardImg = document.querySelector('.tv-card__img'),
+    modalTitle = document.querySelector('.modal__title'),
+    genresList= document.querySelector('.genres-list'),
+    rating = document.querySelector('.rating'),
+    description = document.querySelector('.description'),
+    modalLink = document.querySelector('.modalLink');
+
+const loading = document.createElement('div');
+loading.className = 'loading';
 
 
 class DBService {
+
     getData = async (url) => {
         const res = await fetch(url);
 
         if (res.ok) {
             return res.json();
         } else {
-            throw new Error(`Не удалось получить данные по адресу ${url}`)
+            throw new Error(`Не удалось получить данные по адресу ${url}`);
         }
     }
 
     getTestData = () => {
-        return this.getData('test.json')
+        return this.getData('test.json');
+    }
+
+    getTestCard = () => {
+        return this.getData('card.json');
+    }
+
+    getSearchResult = (query) => {
+        return this.getData(`${SERVER}search/tv?api_key=${API_KEY}$query=${query}&language=ru-RU`);
     }
 }
 
@@ -53,12 +73,15 @@ const renderCard = (response) => {
             <h4 class="tv-card__head">${title}</h4>
         </a>
         `;
-
+        loading.remove();
         tvShowsList.append(card);
     });
 };
 
-new DBService().getTestData().then(renderCard);
+{
+    tvShows.append(loading);
+    new DBService().getTestData().then(renderCard);
+}
 
 // Open and close menu
 
@@ -94,8 +117,30 @@ tvShowsList.addEventListener('click', (event) => {
     const card = target.closest('.tv-card');
 
     if (card) {
-        document.body.style.overflow = "hidden";
-        modal.classList.remove('hide');
+
+        new DBService().getTestCard()
+            .then(response => {
+                console.log(data);
+                tvCardImg.src = 'IMG_URL + response.poster_path';
+                modalTitle.textContent = response.name;
+                // genresList.innerHTML = data.genres.reduce((acc, item) => {
+                //     return `${acc}<li>${item.name}</li>`
+                // }, '')
+                genresList.textContent = '';
+                // for (const item of data.genres) {
+                //     genresList.innerHTML += `<li>${item.name}</li>`;
+                // }
+                data.genres.forEach(item => {
+                    genresList.innerHTML += `<li>${item.name}</li>`;
+                })
+                rating
+                description
+                modalLink
+            })
+            .then(() => {
+                document.body.style.overflow = "hidden";
+                modal.classList.remove('hide');
+            })
     }
 });
 
